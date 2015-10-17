@@ -99,4 +99,5 @@ IndexBuilder.prototype.addTypesToIndex = function(cvs){
 	});
 }
 
+
 module.exports = IndexBuilder;
