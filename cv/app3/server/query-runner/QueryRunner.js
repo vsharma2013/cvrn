@@ -14,8 +14,16 @@ QueryRunner.prototype.init = function(){
 	});
 }
 
-QueryRunner.prototype.run = function(){
-	
+QueryRunner.prototype.run = function(req, res){
+	var query = this.getQueryStringFromRequest(req);
+	res.json({status : 'query executed in runner'});
+}
+
+QueryRunner.prototype.getQueryStringFromRequest = function(req){
+	var query = decodeURIComponent(req.query.q).toLowerCase();	
+	var arr = query.split(" ");
+	arr = _.filter(arr, function(a){ return a.length > 0; });
+	return arr.join(" ");
 }
 
 module.exports = QueryRunner;

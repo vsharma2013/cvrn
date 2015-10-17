@@ -13,7 +13,7 @@ ApiController.prototype.handleCreateIndexRequest = function(req, res){
 }
 
 ApiController.prototype.handleSearchRequest = function(req, res){	
-	res.json({status : success})
+	new QueryRunner().run(req, res);
 }
 
 var gApiController = new ApiController();
