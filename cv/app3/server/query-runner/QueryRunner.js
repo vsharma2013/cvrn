@@ -20,7 +20,7 @@ QueryRunner.prototype.run = function(req, res){
 }
 
 QueryRunner.prototype.runMatchPhraseQuery =function(query, httpResp){
-	var esQuery = this.getMathPhraseESQuery(query);
+	var esQuery = this.getMatchPhraseESQuery(query);
 	this.client.search(esQuery, (function(err, res){
 		if(err){
 			logger.log(err);
@@ -40,29 +40,40 @@ QueryRunner.prototype.onMatchPhraseResponse = function(respMatchPhrase, query, r
 			cvs : respMatchPhrase.hits.hits
 		});
 	}
-	else		
-		this.rerunMatchPhraseQuery(query, respHttp);
+	else{
+		respHttp.json({
+			success: false, 
+			message : 'No matching results found.'
+		});
+	}		
+		
 }
 
-QueryRunner.prototype.rerunMatchPhraseQuery = function(orgQuery, respHttp){
-	if(orgQuery.length === 0) respHttp({success: false, message : 'No matching results found.'});
-
-	var idx = _.lastIndexOf(orgQuery, " ");
-	if(idx === -1) respHttp({success: false, message : 'No matching results found.'});
-
-	var query = orgQuery.substr(0, idx);
-	this.runMatchPhraseQuery(query, respHttp);
-}
-
-QueryRunner.prototype.getMathPhraseESQuery = function(query){
+QueryRunner.prototype.getMatchPhraseESQuery = function(query){
 	var esQuery = {
 		index: config.elasticSearch.cvIndex,
 		type: config.elasticSearch.cvType,
 		body: {
-			query: {
-				match_phrase: {
-					content : query
-				}
+		  "query": {
+		        "match": {  
+		            "content": {
+		                "query": query,
+		                "minimum_should_match": "30%"
+		            }
+		        }
+		    },
+		    "rescore": {
+		        "window_size": 50, 
+		        "query": {         
+		            "rescore_query": {
+		                "match_phrase": {
+		                    "content": {
+		                        "query": query,
+		                        "slop":  10
+		                    }
+		                }
+		            }
+			    }
 			}
 		}
 	};
