@@ -16,7 +16,57 @@ QueryRunner.prototype.init = function(){
 
 QueryRunner.prototype.run = function(req, res){
 	var query = this.getQueryStringFromRequest(req);
-	res.json({status : 'query executed in runner'});
+	this.runMatchPhraseQuery(query, res);
+}
+
+QueryRunner.prototype.runMatchPhraseQuery =function(query, httpResp){
+	var esQuery = this.getMathPhraseESQuery(query);
+	this.client.search(esQuery, (function(err, res){
+		if(err){
+			logger.log(err);
+			httpResp.json({success : false, results : 'error in ES query execute'});
+		}
+		else{
+			this.onMatchPhraseResponse(res, query, httpResp);
+		}
+	}).bind(this));
+}
+
+QueryRunner.prototype.onMatchPhraseResponse = function(respMatchPhrase, query, respHttp){
+	if(respMatchPhrase && respMatchPhrase.hits.total > 0){
+		respHttp.json({
+			success: true,
+			count: respMatchPhrase.hits.total,
+			cvs : respMatchPhrase.hits.hits
+		});
+	}
+	else		
+		this.rerunMatchPhraseQuery(query, respHttp);
+}
+
+QueryRunner.prototype.rerunMatchPhraseQuery = function(orgQuery, respHttp){
+	if(orgQuery.length === 0) respHttp({success: false, message : 'No matching results found.'});
+
+	var idx = _.lastIndexOf(orgQuery, " ");
+	if(idx === -1) respHttp({success: false, message : 'No matching results found.'});
+
+	var query = orgQuery.substr(0, idx);
+	this.runMatchPhraseQuery(query, respHttp);
+}
+
+QueryRunner.prototype.getMathPhraseESQuery = function(query){
+	var esQuery = {
+		index: config.elasticSearch.cvIndex,
+		type: config.elasticSearch.cvType,
+		body: {
+			query: {
+				match_phrase: {
+					content : query
+				}
+			}
+		}
+	};
+	return esQuery;
 }
 
 QueryRunner.prototype.getQueryStringFromRequest = function(req){
