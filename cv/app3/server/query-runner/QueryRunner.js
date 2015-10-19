@@ -54,27 +54,28 @@ QueryRunner.prototype.getMatchPhraseESQuery = function(query){
 		index: config.elasticSearch.cvIndex,
 		type: config.elasticSearch.cvType,
 		body: {
-		  "query": {
-		        "match": {  
-		            "content": {
-		                "query": query,
-		                "minimum_should_match": "30%"
+		  query: {
+		        match: {  
+		            content: {
+		                query: query,
+		                minimum_should_match: "30%"
 		            }
 		        }
 		    },
 		    "rescore": {
-		        "window_size": 50, 
-		        "query": {         
-		            "rescore_query": {
-		                "match_phrase": {
-		                    "content": {
-		                        "query": query,
-		                        "slop":  10
+		        window_size: 50, 
+		        query: {         
+		            rescore_query: {
+		                match_phrase: {
+		                    content: {
+		                        query: query,
+		                        slop:  10
 		                    }
 		                }
 		            }
 			    }
-			}
+			},
+			size : 50
 		}
 	};
 	return esQuery;
