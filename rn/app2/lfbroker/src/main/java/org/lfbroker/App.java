@@ -78,22 +78,22 @@ public class App
     	
     }
     
-   private  static String readFile(String path, Charset encoding) 
-    		  throws IOException 
-    		{
-    		  byte[] encoded = Files.readAllBytes(Paths.get(path));
-    		  return new String(encoded, encoding);
-    		}
+    private  static String readFile(String path, Charset encoding) throws IOException 	  
+	{
+	    byte[] encoded = Files.readAllBytes(Paths.get(path));
+	    return new String(encoded, encoding);
+	}
+   
    private static void runTest() throws InterruptedException, IOException
    {
-   	Context context = ZMQ.context(1);;
-   	Socket publisher = context.socket(ZMQ.REQ);
-   	publisher.connect("tcp://localhost:5559");
-   	publisher.send("hello");
-   	publisher.recvStr();
-   	Thread.sleep(2 * 1000);
-   	publisher.send("hello");
-   	Thread.sleep(2 * 1000);
-   	System.out.println("done sending");
+	   	Context context = ZMQ.context(1);;
+	   	Socket publisher = context.socket(ZMQ.REQ);
+	   	publisher.connect("tcp://localhost:5559");
+	   	publisher.send("hello");
+	   	publisher.recvStr();
+	   	Thread.sleep(2 * 1000);
+	   	publisher.send("hello");
+	   	Thread.sleep(2 * 1000);
+	   	System.out.println("done sending");
    }
 }
