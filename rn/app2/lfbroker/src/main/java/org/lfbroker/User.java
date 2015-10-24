@@ -10,9 +10,9 @@ public class User extends Thread{
 	Socket publisher = context.socket(ZMQ.REQ);
 	String _channelName = "";
 	boolean _continue = true;
-	int _sent = 0;
-	int _recd = 0;
-	
+	int _sent = 0;  public int getSent() { return _sent; }
+	int _recd = 0;  public int getRecd() { return _recd; }
+				
 	User(String channelName){
 		_channelName = channelName;
 		publisher.connect("tcp://localhost:5559");
@@ -24,27 +24,19 @@ public class User extends Thread{
 		while(_continue){
 			String address = subscriber.recvStr ();
 	        String contents = subscriber.recvStr ();
-	        System.out.println(address + " : " + contents);
-	        
-	        //if(contents.contains("m : reply")) return;
-	        _recd += 1;
-	        _sent += 1;
-	        publisher.send("{c : " + _channelName + ", m : reply message 1 }"); 
-			
+	        System.out.println(String.format("Registered channel : %s   Received Channel : %s     %s", _channelName, address, contents));
+	        _recd += 1;	        
 		}
 	}
 	
-	public void publish(){      
-		publisher.send("{c : " + _channelName + ", m : message 1 }"); 
+	public void publish(){    		
+		publisher.send("{\"c\" : \"" + _channelName + "\", \"m\" :\" message 1\" }"); 
 		publisher.recvStr();
-//		publisher.send("{c : " + _channelName + ", m : message 2 }"); 
-//		publisher.send("{c : " + _channelName + ", m : message 3 }"); 
-//		publisher.send("{c : " + _channelName + ", m : message 4 }"); 
 		_sent += 1;
-		System.out.println(_sent);
 	}
 	
 	public void kill(){
 		_continue = false;
 	}
+
 }

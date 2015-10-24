@@ -25,4 +25,8 @@ public class Channel extends Thread{
 		_continue = false;
 		_userGroup.stop();
 	}	
+	
+	public void showOutput(){
+		_userGroup.showOutput();
+	}
 }

@@ -26,23 +26,12 @@ public class App
     	//runTest();
     }
     
-    private static void runTest() throws InterruptedException, IOException
-    {
-    	Context context = ZMQ.context(1);;
-    	Socket publisher = context.socket(ZMQ.REQ);
-    	publisher.connect("tcp://localhost:5559");
-    	publisher.send("hello");
-    	publisher.recvStr();
-    	Thread.sleep(2 * 1000);
-    	publisher.send("hello");
-    	Thread.sleep(2 * 1000);
-    	System.out.println("done sending");
-    }
+    
     
     private static void  runMain() throws InterruptedException, IOException
     {
     	List<Channel> _channels = new ArrayList<Channel> ();
-        int channelCount = 1;
+        int channelCount = 5;
         String sessionId = getSessionId();
         for(int i = 1; i <= channelCount ; i++){
         	_channels.add(new Channel(sessionId + "ch-" + String.valueOf(i)));
@@ -51,12 +40,17 @@ public class App
         for(Channel c : _channels){
         	c.start();
         }
+        System.out.println("running...");
         
         Thread.sleep(10 * 1000);
         
         System.out.println("Stopping all threads");
         for(Channel c : _channels){
         	c.kill();
+        }
+        Thread.sleep(10 * 1000);
+        for(Channel c : _channels){
+        	c.showOutput();
         }
     }
     
@@ -68,7 +62,7 @@ public class App
     	if(f.exists()){
     		String content = readFile(fileName, Charset.defaultCharset());
     		int id = Integer.valueOf(content);
-    		String sid = "s" + content + "-";
+    		String sid = "ss" + content + "-";
     		++id;
     		PrintWriter out = new PrintWriter(fileName);
     		out.print(String.valueOf(id));
@@ -79,7 +73,7 @@ public class App
     		PrintWriter out = new PrintWriter(fileName);
     		out.print("2");
     		out.close();
-    		return "s1-";
+    		return "ss1-";
     	}
     	
     }
@@ -90,4 +84,16 @@ public class App
     		  byte[] encoded = Files.readAllBytes(Paths.get(path));
     		  return new String(encoded, encoding);
     		}
+   private static void runTest() throws InterruptedException, IOException
+   {
+   	Context context = ZMQ.context(1);;
+   	Socket publisher = context.socket(ZMQ.REQ);
+   	publisher.connect("tcp://localhost:5559");
+   	publisher.send("hello");
+   	publisher.recvStr();
+   	Thread.sleep(2 * 1000);
+   	publisher.send("hello");
+   	Thread.sleep(2 * 1000);
+   	System.out.println("done sending");
+   }
 }
