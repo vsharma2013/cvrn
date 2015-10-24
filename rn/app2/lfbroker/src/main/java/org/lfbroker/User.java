@@ -15,7 +15,7 @@ public class User extends Thread{
 	
 	User(String channelName){
 		_channelName = channelName;
-		publisher.connect("tcp://localhost:5500");
+		publisher.connect("tcp://localhost:5559");
 		subscriber.connect("tcp://localhost:5501");		
 		subscriber.subscribe(channelName.getBytes());		
 	}
@@ -26,22 +26,22 @@ public class User extends Thread{
 	        String contents = subscriber.recvStr ();
 	        System.out.println(address + " : " + contents);
 	        
-	        if(contents.contains("m : reply")) return;
-	        
+	        //if(contents.contains("m : reply")) return;
+	        _recd += 1;
+	        _sent += 1;
 	        publisher.send("{c : " + _channelName + ", m : reply message 1 }"); 
-			publisher.send("{c : " + _channelName + ", m : reply message 2 }"); 
-			publisher.send("{c : " + _channelName + ", m : reply message 3 }"); 
-			publisher.send("{c : " + _channelName + ", m : reply message 4 }"); 
-			_recd += 4;
+			
 		}
 	}
 	
 	public void publish(){      
 		publisher.send("{c : " + _channelName + ", m : message 1 }"); 
-		publisher.send("{c : " + _channelName + ", m : message 2 }"); 
-		publisher.send("{c : " + _channelName + ", m : message 3 }"); 
-		publisher.send("{c : " + _channelName + ", m : message 4 }"); 
-		_sent += 4;
+		publisher.recvStr();
+//		publisher.send("{c : " + _channelName + ", m : message 2 }"); 
+//		publisher.send("{c : " + _channelName + ", m : message 3 }"); 
+//		publisher.send("{c : " + _channelName + ", m : message 4 }"); 
+		_sent += 1;
+		System.out.println(_sent);
 	}
 	
 	public void kill(){

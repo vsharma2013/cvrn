@@ -1,5 +1,9 @@
 package org.lfbroker;
 
+import org.zeromq.ZMQ;
+import org.zeromq.ZMQ.Context;
+import org.zeromq.ZMQ.Socket;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,7 +22,26 @@ public class App
 {
     public static void main( String[] args ) throws InterruptedException, IOException
     {
-        List<Channel> _channels = new ArrayList<Channel> ();
+        runMain();
+    	//runTest();
+    }
+    
+    private static void runTest() throws InterruptedException, IOException
+    {
+    	Context context = ZMQ.context(1);;
+    	Socket publisher = context.socket(ZMQ.REQ);
+    	publisher.connect("tcp://localhost:5559");
+    	publisher.send("hello");
+    	publisher.recvStr();
+    	Thread.sleep(2 * 1000);
+    	publisher.send("hello");
+    	Thread.sleep(2 * 1000);
+    	System.out.println("done sending");
+    }
+    
+    private static void  runMain() throws InterruptedException, IOException
+    {
+    	List<Channel> _channels = new ArrayList<Channel> ();
         int channelCount = 1;
         String sessionId = getSessionId();
         for(int i = 1; i <= channelCount ; i++){
@@ -48,7 +71,7 @@ public class App
     		String sid = "s" + content + "-";
     		++id;
     		PrintWriter out = new PrintWriter(fileName);
-    		out.println(String.valueOf(id));
+    		out.print(String.valueOf(id));
     		out.close();
     		return sid;
     	}
