@@ -10,7 +10,6 @@ worker.on('message', function(msg) {
 	worker.send("ok");
 	
 	var str = msg.toString();
-  console.log('received request:', str);
-  var req = JSON.parse(str);
-  publisher.send([req.c, req.m]);
+    var req = JSON.parse(str);
+    publisher.send([req.c, str]);
 });
