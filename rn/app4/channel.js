@@ -9,7 +9,7 @@ function channel(chId){
 }
 
 channel.prototype.run = function(httpReqTS){
-	this.user1.publish(httpReqTS, Date.now);
+	this.user1.publish(httpReqTS, Date.now());
 }
 
 module.exports = channel;
