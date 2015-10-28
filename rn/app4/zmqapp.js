@@ -1,7 +1,6 @@
-var zmqServer = require('./zmqServer');
 var channel = require('./channel');
 
-var channelCount = 10;
+var channelCount = 5;
 
 var channels = [];
 
