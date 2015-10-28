@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cluster": "^0.7.7",
     "zmq": "^2.13.0"
   }
 }

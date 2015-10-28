@@ -12,4 +12,5 @@ worker.on('message', function(msg) {
 	var str = msg.toString();
     var req = JSON.parse(str);
     publisher.send([req.c, str]);
+    console.log('response at : ' + Date.now());
 });

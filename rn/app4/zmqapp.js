@@ -1,6 +1,6 @@
 var channel = require('./channel');
 
-var channelCount = 5;
+var channelCount = 255;
 
 var channels = [];
 

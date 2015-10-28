@@ -30,7 +30,7 @@ user.prototype.onSubscriberMessage = function(){
         msg.push(arg.toString());
     });
     var m = JSON.parse(msg[1]);     
-    console.log("Req at : " + m.hts + "    Porc at : " + m.cts + "    Pub at : " + m.mts + "    Recd at : " + n + "    Time Taken : " + (n - m.mts));
+    console.log("Req at : " + m.hts + "    Porc at : " + m.cts + "    Pub at : " + m.mts + "    Recd at : " + n + "    Time Taken : " + (n - m.mts) + "    channel : " + this.channelName);
 }
 
 
