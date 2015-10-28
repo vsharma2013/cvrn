@@ -24,12 +24,13 @@ user.prototype.publish = function(httpReqTS, chPublishTS){
 }
 
 user.prototype.onSubscriberMessage = function(){
+	var n = Date.now();
 	var msg = [];
     Array.prototype.slice.call(arguments).forEach(function(arg) {
         msg.push(arg.toString());
     });
-
-    console.log(msg);
+    var m = JSON.parse(msg[1]);     
+    console.log("Req at : " + m.hts + "    Porc at : " + m.cts + "    Pub at : " + m.mts + "    Recd at : " + n + "    Time Taken : " + (n - m.mts));
 }
 
 
