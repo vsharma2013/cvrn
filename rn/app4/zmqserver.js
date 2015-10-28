@@ -10,9 +10,7 @@ server.bindSync('tcp://*:5559');
 worker.bindSync('tcp://*:5560');
 
 server.on('message', function() {
-  // Note that separate message parts come as function arguments.
   var args = Array.apply(null, arguments);
-  // Pass array of strings/buffers to send multipart messages.
   worker.send(args);
 });
 
