@@ -1,4 +1,4 @@
-var bSingleCore = false;
+var bSingleCore = true;
 
 if(bSingleCore){
 	var http = require('http');

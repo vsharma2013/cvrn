@@ -31,10 +31,10 @@ public class App
     private static void  runMain() throws InterruptedException, IOException
     {
     	List<Channel> _channels = new ArrayList<Channel> ();
-        int channelCount = 5;
-        String sessionId = getSessionId();
+        int channelCount = 9;
+        //String sessionId = getSessionId();
         for(int i = 1; i <= channelCount ; i++){
-        	_channels.add(new Channel(sessionId + "ch-" + String.valueOf(i)));
+        	_channels.add(new Channel("ch-14" + String.valueOf(i)));
         }
         
         for(Channel c : _channels){
@@ -42,7 +42,7 @@ public class App
         }
         System.out.println("running...");
         
-        Thread.sleep(10 * 1000);
+        Thread.sleep(3 * 1000);
         
         System.out.println("Stopping all threads");
         for(Channel c : _channels){

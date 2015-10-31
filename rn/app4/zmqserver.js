@@ -1,7 +1,7 @@
 
 
 
-var bSingleCore = false;
+var bSingleCore = true;
 
 if(bSingleCore){
 	require('./worker');
