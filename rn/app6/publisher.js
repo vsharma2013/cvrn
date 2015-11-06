@@ -1,25 +1,32 @@
 var http = require('http');
 var multiCore = true;
+var dtStart = Date.now();
 
 function runSingle(){
 	var mqtt    = require('mqtt');
-	var client  = mqtt.connect('mqtt://192.168.1.33');
-
-	client.on('connect', function () {
-		getPublisherChannelName(function(chName){
-			startLoop(chName);
-		});	  
-	});
-	 
-	client.on('message', function (topic, message) {
-	   console.log(message.toString() + ' client id : ' + client.options.clientId);
-	});
+	var client  = null;
 
 	
+
+	getPublisherChannelName(function(chName){
+		var clientName = 'P_' + chName;
+		client  = mqtt.connect('mqtt://localhost', {clientId : clientName});
+
+		client.on('connect', function () {
+			startLoop(chName)  
+		});		 
+	});	
+
+
 	function startLoop(chName){
-		setInterval(function(){
-			client.publish(chName, 'Message from publisher : ' + chName); 
-		}, 1);
+		var intv = setInterval(function(){
+			client.publish(chName, 'Message from publisher : ' + chName);
+			sendPublishTick(chName); 
+			if(Date.now() - dtStart > 5000){
+				clearInterval(intv);
+				console.log('publish stopped')
+			}
+		}, 100);
 	}
 }
 
@@ -65,4 +72,12 @@ function getPublisherChannelName(cbOnDone){
             }         
         });
 	})
+}
+
+function sendPublishTick(chName){
+	http.get({
+		host : 'localhost',
+		port : '9997',
+		path : '/pubdata?q=' + chName,		
+	}, function() {} );
 }

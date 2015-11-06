@@ -8,7 +8,8 @@ function runSingle(){
 	
 	getSubscribeChannelName(function(chName){
 		_chName = chName;
-		client = mqtt.connect('mqtt://192.168.1.33', {clientId : chName});		
+		var clientName = 'S_' + _chName;
+		client = mqtt.connect('mqtt://localhost', {clientId : clientName});		
 		
 		client.on('connect', function () {
 			client.subscribe(_chName); 
@@ -17,6 +18,7 @@ function runSingle(){
 
 		client.on('message', function (topic, message) {
 		   console.log(message.toString() + '    subscriber : ' + _chName + '  for client id : ' + client.options.clientId);
+		   sendSubscribeTick(_chName);
 		});
 	}); 
 
@@ -65,4 +67,12 @@ function getSubscribeChannelName(cbOnDone){
             }         
         });
 	})
+}
+
+function sendSubscribeTick(chName){
+	http.get({
+		host : 'localhost',
+		port : '9997',
+		path : '/subdata?q=' + chName,		
+	}, function() {} );
 }
